@@ -12,7 +12,7 @@ class PublicKey extends AbstractKey implements PublicKeyInterface
 {
     public function __construct(string $binary)
     {
-        if (strlen($binary) !== \SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES) {
+        if (strlen($binary) !== SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES) {
             throw new Exception(
                 sprintf('public key size should be %d bytes', SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES)
             );

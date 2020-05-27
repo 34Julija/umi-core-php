@@ -8,9 +8,9 @@ use UmiTop\UmiCore\Key\PublicKeyInterface;
 
 interface AddressInterface
 {
-    public const ADDRESS_LENGTH = 34;
-    public const VERSION_UMI_BASIC = 0x55A9;
-    public const VERSION_UMI_HD = 0xD5A9;
+    const ADDRESS_LENGTH = 34;
+    const VERSION_UMI_BASIC = 0x55A9;
+    const VERSION_UMI_HD = 0xD5A9;
 
     public function getVersion(): int;
 

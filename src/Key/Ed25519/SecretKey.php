@@ -13,7 +13,7 @@ class SecretKey extends AbstractKey implements SecretKeyInterface
 {
     public function __construct(string $bytes)
     {
-        if (strlen($bytes) !== \SODIUM_CRYPTO_SIGN_SECRETKEYBYTES) {
+        if (strlen($bytes) !== SODIUM_CRYPTO_SIGN_SECRETKEYBYTES) {
             throw new Exception(
                 sprintf('secretkey should be %d bytes', SODIUM_CRYPTO_SIGN_SECRETKEYBYTES)
             );

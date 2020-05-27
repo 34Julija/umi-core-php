@@ -6,7 +6,7 @@ namespace UmiTop\UmiCore\Key;
 
 abstract class AbstractKey implements KeyInterface
 {
-    protected string $bytes;
+    protected $bytes;
 
     public function __construct(string $bytes)
     {

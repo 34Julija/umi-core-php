@@ -12,14 +12,14 @@ use UmiTop\UmiCore\Util\Converter;
 
 class Address implements AddressInterface
 {
-    private const VERSION_OFFSET = 0;
-    private const VERSION_LENGTH = 2;
-    private const PUBKEY_OFFSET = 2;
-    private const PUBKEY_LENGTH = 32;
-    private const FIFTEEN_BITS = 0x7FFF; // 01111111_11111111 ($x >> 1 << 1)
-    private const FIRST_BIT = 0x8000;    // 10000000_00000000 (1 << 15)
+    const VERSION_OFFSET = 0;
+    const VERSION_LENGTH = 2;
+    const PUBKEY_OFFSET = 2;
+    const PUBKEY_LENGTH = 32;
+    const FIFTEEN_BITS = 0x7FFF; // 01111111_11111111 ($x >> 1 << 1)
+    const FIRST_BIT = 0x8000;    // 10000000_00000000 (1 << 15)
 
-    private string $bytes;
+    private $bytes;
 
     public function __construct(string $bytes = null)
     {
@@ -40,7 +40,7 @@ class Address implements AddressInterface
         return intval(unpack('n', substr($this->bytes, self::VERSION_OFFSET, self::VERSION_LENGTH))[1]);
     }
 
-    public function setVersion(int $version): self
+    public function setVersion(int $version): AddressInterface
     {
         $version = intval($this->getVersion() & self::FIRST_BIT) + intval($version & self::FIFTEEN_BITS);
         $this->bytes = substr_replace(
@@ -58,7 +58,7 @@ class Address implements AddressInterface
         return Converter::versionToPrefix($this->getVersion());
     }
 
-    public function setPrefix(string $prefix): self
+    public function setPrefix(string $prefix): AddressInterface
     {
         return $this->setVersion(Converter::prefixToVersion($prefix));
     }
@@ -82,13 +82,15 @@ class Address implements AddressInterface
         return $this;
     }
 
-    public function fromBech32(string $address): self
+    public function fromBech32(string $address): AddressInterface
     {
         /**
          * @var string $prefix
          * @var array<array-key, int> $words
          */
-        [$prefix, $words] = Bech32\decode($address);
+        $raw = Bech32\decode($address);
+        $prefix = $raw[0];
+        $words = $raw[1];
         $pubKey = array_reduce(
             Bech32\convertBits($words, count($words), 5, 8, false),
             function (string $carry, int $item): string {

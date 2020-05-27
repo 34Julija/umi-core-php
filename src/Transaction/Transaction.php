@@ -13,28 +13,28 @@ use UmiTop\UmiCore\Util\Converter;
 
 class Transaction implements TransactionInterface
 {
-    private const VERSION_OFFSET = 0;
-    private const SENDER_OFFSET = 1;
-    private const RECIPIENT_OFFSET = 35;
-    private const VALUE_OFFSET = 69;
-    private const VALUE_LENGTH = 8;
-    private const NONCE_OFFSET = 77;
-    private const NONCE_LENGTH = 8;
-    private const PREFIX_OFFSET = 35;
-    private const PREFIX_LENGTH = 2;
-    private const PROFIT_OFFSET = 37;
-    private const PROFIT_LENGTH = 2;
-    private const FEE_OFFSET = 39;
-    private const FEE_LENGTH = 2;
-    private const NAME_OFFSET = 41;
-    private const NAME_LENGTH = 36;
+    const VERSION_OFFSET = 0;
+    const SENDER_OFFSET = 1;
+    const RECIPIENT_OFFSET = 35;
+    const VALUE_OFFSET = 69;
+    const VALUE_LENGTH = 8;
+    const NONCE_OFFSET = 77;
+    const NONCE_LENGTH = 8;
+    const PREFIX_OFFSET = 35;
+    const PREFIX_LENGTH = 2;
+    const PROFIT_OFFSET = 37;
+    const PROFIT_LENGTH = 2;
+    const FEE_OFFSET = 39;
+    const FEE_LENGTH = 2;
+    const NAME_OFFSET = 41;
+    const NAME_LENGTH = 36;
 
-    private const UNSIGNED_OFFSET = 0;
-    private const UNSIGNED_LENGTH = 85;
-    private const SIGNATURE_OFFSET = 85;
-    private const SIGNATURE_LENGTH = 64;
+    const UNSIGNED_OFFSET = 0;
+    const UNSIGNED_LENGTH = 85;
+    const SIGNATURE_OFFSET = 85;
+    const SIGNATURE_LENGTH = 64;
 
-    private string $bytes;
+    private $bytes;
 
     public function __construct(string $bytes = null)
     {
@@ -65,7 +65,7 @@ class Transaction implements TransactionInterface
         return ord($this->bytes[self::VERSION_OFFSET]);
     }
 
-    public function setVersion(int $version): self
+    public function setVersion(int $version): TransactionInterface
     {
         $this->bytes[self::VERSION_OFFSET] = chr($version);
 
@@ -79,7 +79,7 @@ class Transaction implements TransactionInterface
         );
     }
 
-    public function setSender(AddressInterface $address): self
+    public function setSender(AddressInterface $address): TransactionInterface
     {
         $this->bytes = substr_replace(
             $this->bytes,
@@ -98,7 +98,7 @@ class Transaction implements TransactionInterface
         );
     }
 
-    public function setRecipient(AddressInterface $address): self
+    public function setRecipient(AddressInterface $address): TransactionInterface
     {
         $this->bytes = substr_replace(
             $this->bytes,
@@ -159,7 +159,7 @@ class Transaction implements TransactionInterface
         );
     }
 
-    public function setPrefix(string $prefix): self
+    public function setPrefix(string $prefix): TransactionInterface
     {
         $this->bytes = substr_replace(
             $this->bytes,
@@ -176,7 +176,7 @@ class Transaction implements TransactionInterface
         return substr($this->bytes, self::NAME_OFFSET + 1, ord($this->bytes[self::NAME_OFFSET]));
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): TransactionInterface
     {
         if (strlen($name) >= self::NAME_LENGTH) {
             throw new Exception('name too long');
@@ -193,7 +193,7 @@ class Transaction implements TransactionInterface
         return intval(unpack('n', substr($this->bytes, self::PROFIT_OFFSET, self::PROFIT_LENGTH))[1]);
     }
 
-    public function setProfitPercent(int $percent): self
+    public function setProfitPercent(int $percent): TransactionInterface
     {
         $this->bytes = substr_replace(
             $this->bytes,
@@ -210,7 +210,7 @@ class Transaction implements TransactionInterface
         return intval(unpack('n', substr($this->bytes, self::FEE_OFFSET, self::FEE_LENGTH))[1]);
     }
 
-    public function setFeePercent(int $percent): self
+    public function setFeePercent(int $percent): TransactionInterface
     {
         $this->bytes = substr_replace(
             $this->bytes,
@@ -227,7 +227,7 @@ class Transaction implements TransactionInterface
         return substr($this->bytes, self::SIGNATURE_OFFSET, self::SIGNATURE_LENGTH);
     }
 
-    public function setSignature(string $signature): self
+    public function setSignature(string $signature): TransactionInterface
     {
         $this->bytes = substr_replace(
             $this->bytes,
@@ -239,7 +239,7 @@ class Transaction implements TransactionInterface
         return $this;
     }
 
-    public function sign(SecretKeyInterface $secretKey): self
+    public function sign(SecretKeyInterface $secretKey): TransactionInterface
     {
         return $this->setSignature(
             $secretKey->sign(

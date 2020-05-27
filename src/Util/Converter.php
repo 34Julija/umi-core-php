@@ -8,9 +8,9 @@ use Exception;
 
 class Converter
 {
-    private const ASCII_SHIFT = 96;
-    private const VERSION_GENESIS = 0x0000;
-    private const FIFTEEN_BITS = 0x7FFF;
+    const ASCII_SHIFT = 96;
+    const VERSION_GENESIS = 0x0000;
+    const FIFTEEN_BITS = 0x7FFF;
 
     public static function versionToPrefix(int $version): string
     {
