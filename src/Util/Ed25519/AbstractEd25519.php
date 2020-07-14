@@ -40,6 +40,7 @@ abstract class AbstractEd25519 extends AbstractBase
      * @param array<int, array<int, int>> $p
      * @param array<int, array<int, int>> $q
      * @param int $b
+     * @return void
      */
     protected function cswap(array &$p, array &$q, int $b): void
     {
@@ -51,6 +52,7 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $o
      * @param array<int, int> $i
+     * @return void
      */
     protected function inv25519(array &$o, array $i): void
     {
@@ -82,6 +84,7 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param string $o
      * @param array<int, int> $n
+     * @return void
      */
     protected function pack25519(string &$o, array $n): void
     {
@@ -125,6 +128,7 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $o
      * @param array<int, int> $i
+     * @return void
      */
     protected function pow2523(array &$o, array $i): void
     {
@@ -143,6 +147,7 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $r
      * @param array<int, int> $a
+     * @return void
      */
     protected function set25519(array &$r, array $a): void
     {
@@ -154,6 +159,7 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $o
      * @param string $n
+     * @return void
      */
     protected function unpack25519(array &$o, string $n): void
     {
@@ -167,6 +173,7 @@ abstract class AbstractEd25519 extends AbstractBase
      * @param array<int, int> $p
      * @param array<int, int> $q
      * @param int $b
+     * @return void
      */
     private function sel25519(array &$p, array &$q, int $b): void
     {

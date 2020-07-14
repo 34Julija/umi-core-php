@@ -84,6 +84,7 @@ class Bech32
 
     /**
      * @param string $str
+     * @return void
      * @throws Exception
      */
     private function checkAlphabet(string $str): void
@@ -228,6 +229,7 @@ class Bech32
     /**
      * @param string $prefix
      * @param string $data
+     * @return void
      * @throws Exception
      */
     private function verifyChecksum(string $prefix, string $data): void

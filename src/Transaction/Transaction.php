@@ -404,6 +404,7 @@ class Transaction implements TransactionInterface
 
     /**
      * @param int[] $versions
+     * @return void
      * @throws Exception
      */
     private function checkVersion(array $versions): void

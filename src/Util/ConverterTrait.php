@@ -104,6 +104,7 @@ trait ConverterTrait
 
     /**
      * @param array<int, int> $chars
+     * @return void
      * @throws Exception
      */
     private function checkPrefixChars(array $chars): void

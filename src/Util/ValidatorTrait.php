@@ -38,6 +38,7 @@ trait ValidatorTrait
      * @param int $val
      * @param int|null $min
      * @param int|null $max
+     * @return void
      * @throws Exception
      */
     private function validateInt(int $val, int $min = null, int $max = null): void
@@ -54,6 +55,7 @@ trait ValidatorTrait
     /**
      * @param string $val
      * @param int $length
+     * @return void
      * @throws Exception
      */
     private function validateStr(string $val, int $length): void

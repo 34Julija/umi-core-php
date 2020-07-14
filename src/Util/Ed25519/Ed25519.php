@@ -133,6 +133,7 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param array<int, array<int, int>> $p
      * @param array<int, array<int, int>> $q
+     * @return void
      */
     private function add(array &$p, array $q): void
     {
@@ -162,6 +163,7 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param string $r
      * @param array<int, int> $x
+     * @return void
      */
     private function modL(string &$r, array &$x): void
     {
@@ -196,6 +198,7 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param string $r
      * @param array<int, array<int, int>> $p
+     * @return void
      */
     private function pack(string &$r, array $p): void
     {
@@ -211,6 +214,7 @@ class Ed25519 extends AbstractEd25519
 
     /**
      * @param string $r
+     * @return void
      */
     private function reduce(string &$r): void
     {
@@ -230,6 +234,7 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param array<int, array<int, int>> $p
      * @param string $s
+     * @return void
      */
     private function scalarbase(array &$p, string $s): void
     {
@@ -245,6 +250,7 @@ class Ed25519 extends AbstractEd25519
      * @param array<int, array<int, int>> $p
      * @param array<int, array<int, int>> $q
      * @param string $s
+     * @return void
      */
     private function scalarmult(array &$p, array &$q, string $s): void
     {

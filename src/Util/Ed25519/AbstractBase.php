@@ -104,6 +104,7 @@ abstract class AbstractBase
 
     /**
      * @param array<int, int> $o
+     * @return void
      */
     protected function car25519(array &$o): void
     {
@@ -134,6 +135,7 @@ abstract class AbstractBase
      * @param array<int, int> $o
      * @param array<int, int> $a
      * @param array<int, int> $b
+     * @return void
      */
     protected function fnA(array &$o, array $a, array $b): void
     {
@@ -146,6 +148,7 @@ abstract class AbstractBase
      * @param array<int, int> $o
      * @param array<int, int> $a
      * @param array<int, int> $b
+     * @return void
      */
     protected function fnM(array &$o, array $a, array $b): void
     {
@@ -171,6 +174,7 @@ abstract class AbstractBase
      * @param array<int, int> $o
      * @param array<int, int> $a
      * @param array<int, int> $b
+     * @return void
      */
     protected function fnZ(array &$o, array $a, array $b): void
     {
