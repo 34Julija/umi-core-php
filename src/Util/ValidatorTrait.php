@@ -24,18 +24,42 @@
 
 declare(strict_types=1);
 
-namespace UmiTop\UmiCore\Key;
+namespace UmiTop\UmiCore\Util;
+
+use Exception;
 
 /**
- * Interface SecretKeyInterface
- * @package UmiTop\UmiCore\Key
+ * Trait ValidatorTrait
+ * @package UmiTop\UmiCore\Util
  */
-interface SecretKeyInterface extends KeyInterface
+trait ValidatorTrait
 {
     /**
-     * Создает цифровую подпись сообщения.
-     * @param string $message Сообщение в бинарном виде.
-     * @return string
+     * @param int $val
+     * @param int|null $min
+     * @param int|null $max
+     * @throws Exception
      */
-    public function sign(string $message): string;
+    private function validateInt(int $val, int $min = null, int $max = null): void
+    {
+        if ($min !== null && $val < $min) {
+            throw new Exception('invalid value');
+        }
+
+        if ($max !== null && $val > $max) {
+            throw new Exception('invalid value');
+        }
+    }
+
+    /**
+     * @param string $val
+     * @param int $length
+     * @throws Exception
+     */
+    private function validateStr(string $val, int $length): void
+    {
+        if (strlen($val) !== $length) {
+            throw new Exception('invalid length');
+        }
+    }
 }

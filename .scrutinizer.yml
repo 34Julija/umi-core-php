@@ -1,0 +1,25 @@
+checks:
+  php: true
+build:
+  nodes:
+    analysis:
+      dependencies:
+        override:
+          - true
+      tests:
+        override:
+          - php-scrutinizer-run --enable-security-analysis
+          - phpcs-run
+    tests:
+      dependencies:
+        override:
+          - composer require --dev phpunit/phpunit
+      tests:
+        override:
+          - command: composer test
+            coverage:
+              file: clover.xml
+              format: clover
+filter:
+  paths:
+    - src/

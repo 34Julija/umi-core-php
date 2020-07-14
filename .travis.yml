@@ -1,0 +1,23 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+env:
+  global:
+    - COVERALLS_PARALLEL=true
+    - COMPOSER_MEMORY_LIMIT=-1
+
+install: composer require --dev phpunit/phpunit php-coveralls/php-coveralls
+
+after_success: php vendor/bin/php-coveralls -x clover.xml -o coveralls-upload.json -v
+
+notifications:
+  webhooks: https://coveralls.io/webhook

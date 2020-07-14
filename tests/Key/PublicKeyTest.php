@@ -2,52 +2,55 @@
 
 declare(strict_types=1);
 
-namespace UmiTop\UmiCore\Tests\Key;
+namespace Tests\Key;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use UmiTop\UmiCore\Key\PublicKey;
-use UmiTop\UmiCore\Key\PublicKeyInterface;
 
 class PublicKeyTest extends TestCase
 {
-    public function testCanBeCreatedFromValidString(): void
+    public function testConstructorException(): void
     {
-        $this->assertInstanceOf(
-            PublicKeyInterface::class,
-            new PublicKey(
-                str_repeat("\x0", SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES)
-            )
-        );
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('Exception');
+        } elseif (method_exists($this, 'setExpectedException')) {
+            $this->setExpectedException('Exception'); // PHPUnit 4
+        }
+
+        $bytes = str_repeat('a', PublicKey::LENGTH - 1);
+        new PublicKey($bytes);
     }
 
-    public function testCannotBeCreatedFromInvalidString(): void
+    /**
+     * @dataProvider signatureProvider
+     */
+    public function testVerifySignature(string $key, string $msg, string $sig, bool $expected): void
     {
-        $this->expectException(Exception::class);
-        new PublicKey(
-            str_repeat("\x0", (SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES + 1))
-        );
+        $pubKey = new PublicKey(base64_decode($key));
+        $signature = base64_decode($sig);
+        $message = base64_decode($msg);
+        $actual = $pubKey->verifySignature($signature, $message);
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testMustReturnValidKey(): void
+    /**
+     * @return array<string, array<string, string|bool>>
+     */
+    public function signatureProvider(): array
     {
-        $rnd = random_bytes(SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES);
-        $this->assertEquals(
-            $rnd,
-            (new PublicKey($rnd))->toBytes()
-        );
-    }
-
-    public function testMustVerifyValidKey(): void
-    {
-        $keyPair = sodium_crypto_sign_keypair();
-        $secKey = sodium_crypto_sign_secretkey($keyPair);
-        $pubKey = sodium_crypto_sign_publickey($keyPair);
-        $message = random_bytes(85);
-        $signature = sodium_crypto_sign_detached($message, $secKey);
-
-        $this->assertTrue(
-            (new PublicKey($pubKey))->verifySignature($message, $signature)
-        );
+        return [
+            'valid' => [
+                'key' => 'oD7CzMxo3UYjXg/URrZPluOSOjAbzYVxIXDyONlR5pI=',
+                'msg' => 'K7B3Y9MILKseAlBDkjuwjc48NT3vMWrhixyh7diP8O8B',
+                'sig' => '7mVMWMzqHgy+I9GSlS0XFAXV1IjGmeZhlDQOBMjrwua7EULygNIKgkiQ2h6kSeDq76tBomoaPbc8faFYwNO0Dg==',
+                'exp' => true
+            ],
+            'invalid' => [
+                'key' => 'MUAmRXK6+YHhASTdWN7Xx2keYPG1V+VoVIXN3RNIBSE=',
+                'msg' => 'UGffQxqOxfMcTcWRVaRklCS/MNme5j2IzUh0J8ksbPTd',
+                'sig' => 'kQ7z0+PDJBaQeihqd0hForqdBTVr8mrAO0Sg6RWMi3EbFSdHMVVicqSZVthcr+gjpnjjdOiKbxembcCoXAieCQ==',
+                'exp' => false
+            ]
+        ];
     }
 }

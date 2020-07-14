@@ -2,207 +2,158 @@
 
 declare(strict_types=1);
 
-namespace UmiTop\UmiCore\Tests\Address;
+namespace Tests\Address;
 
-use Exception;
-use Generator;
 use PHPUnit\Framework\TestCase;
 use UmiTop\UmiCore\Address\Address;
-use UmiTop\UmiCore\Address\AddressInterface;
+use UmiTop\UmiCore\Key\PublicKey;
 
 class AddressTest extends TestCase
 {
-    public function testCanBeCreatedEmptyAddress(): void
+    public function testFromBech32(): void
     {
-        $this->assertInstanceOf(AddressInterface::class, new Address());
+        $expected = 'umi1lllllllllllllllllllllllllllllllllllllllllllllllllllsp2pfg9';
+        $actual = Address::fromBech32($expected)->getBech32();
+
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testEmptyAddressMustCorrectLength(): void
+    public function testFromBytes(): void
     {
-        $this->assertEquals(
-            Address::ADDRESS_LENGTH,
-            strlen(
-                (new Address())->toBytes()
-            )
-        );
+        $expected = str_repeat("\x01", Address::LENGTH);
+        $actual = Address::fromBytes($expected)->getBytes();
+
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testEmptyAddressMustBeWithUmiPrefix(): void
+    public function testFromKey(): void
     {
-        $adr = new Address();
+        $key = new PublicKey(str_repeat("\xff", PublicKey::LENGTH));
 
-        $this->assertEquals('umi', $adr->getPrefix());
-        $this->assertEquals(Address::VERSION_UMI_BASIC, $adr->getVersion());
+        $expected = 'umi1lllllllllllllllllllllllllllllllllllllllllllllllllllsp2pfg9';
+        $actual = Address::fromKey($key)->getBech32();
+
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testCanBeCreatedFromValidString(): void
+    public function testSetBytesException(): void
     {
-        $this->assertInstanceOf(
-            AddressInterface::class,
-            new Address(
-                str_repeat("\x0", Address::ADDRESS_LENGTH)
-            )
-        );
-    }
-
-    public function testCannotBeCreatedFromInvalidString(): void
-    {
-        $this->expectException(Exception::class);
-        new Address(
-            str_repeat("\x0", Address::ADDRESS_LENGTH + 1)
-        );
-    }
-
-    /**
-     * @dataProvider validPrefixesProvider
-     */
-    public function testValidPrefixCanBeSet(string $prefix): void
-    {
-        $adr = new Address();
-        $adr->setPrefix($prefix);
-
-        $this->assertEquals($prefix, $adr->getPrefix());
-    }
-
-    /**
-     * @return Generator<array<int, string>>
-     */
-    public function validPrefixesProvider(): Generator
-    {
-        for ($a = ord('a'); $a <= ord('z'); $a++) {
-            for ($b = ord('a'); $b <= ord('z'); $b++) {
-                for ($c = ord('a'); $c <= ord('z'); $c++) {
-                    yield [chr($a) . chr($b) . chr($c)];
-                    return;
-                }
-            }
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('Exception');
+        } elseif (method_exists($this, 'setExpectedException')) {
+            $this->setExpectedException('Exception'); // PHPUnit 4
         }
+
+        $bytes = str_repeat('a', Address::LENGTH - 1);
+        $obj = new Address();
+        $obj->setBytes($bytes);
     }
 
-    /**
-     * @dataProvider invalidPrefixesProvider
-     */
-    public function testInvalidPrefixCannotBeSet(string $prefix): void
+    public function testPrefix(): void
     {
-        $this->expectException(Exception::class);
+        $expected = 'aaa';
 
-        (new Address())->setPrefix($prefix);
+        $obj = new Address();
+        $actual = $obj->setPrefix($expected)->getPrefix();
+
+        $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @return Generator<array<int, string>>
-     */
-    public function invalidPrefixesProvider(): Generator
+    public function testPublicKey(): void
     {
-        $i = 0;
-        do {
-            $s = random_bytes(3);
-            if (ord($s[0]) >= ord('a') && ord($s[0]) <= ord('z')) {
-                continue;
-            }
-            if (ord($s[1]) >= ord('a') && ord($s[1]) <= ord('z')) {
-                continue;
-            }
-            if (ord($s[2]) >= ord('a') && ord($s[2]) <= ord('z')) {
-                continue;
-            }
-            $i++;
-            yield [$s];
-            return;
-        } while ($i < 100000);
+        $bytes = str_repeat("\xff", PublicKey::LENGTH);
+        $pubKey = new PublicKey($bytes);
+        $expected = $pubKey->getBytes();
+
+        $obj = new Address();
+        $actual = $obj->setPublicKey($pubKey)->getPublicKey()->getBytes();
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @dataProvider validBech32Provider
+     * @dataProvider validAddressProvider
      */
-    public function testMustCreateFromValidBech32(string $bech32, string $prefix, string $pubKey): void
+    public function testBech32(string $expected): void
     {
-        $adr = (new Address())->fromBech32($bech32);
+        $obj = new Address();
+        $actual = $obj->setBech32($expected)->getBech32();
 
-        $this->assertEquals($prefix, $adr->getPrefix());
-        $this->assertEquals($pubKey, $adr->getPublicKey()->toBytes());
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @return array<int, array<string, string>>
+     * @return array<array <string, string>>
      */
-    public function validBech32Provider(): array
+    public function validAddressProvider(): array
     {
         return [
-            [
-                'bech32' => 'umi1sxg55ql9rqsj6cqrsj0dd9l9xs8l94x3ynnaqx7x7p7739ddrllsydjasp',
-                'prefix' => 'umi',
-                'pubKey' => (string)hex2bin('81914a03e518212d6003849ed697e5340ff2d4d124e7d01bc6f07de895ad1fff')
+            'umi 0xFF' => [
+                'adr' => 'umi1lllllllllllllllllllllllllllllllllllllllllllllllllllsp2pfg9'
             ],
-            [
-                'bech32' => 'aaa1z3ucy37djrhp2wqughtedcm7fv0yxrarrttzeqpzs4xpensq4utsuymc4y',
-                'prefix' => 'aaa',
-                'pubKey' => (string)hex2bin('14798247cd90ee15381c45d796e37e4b1e430fa31ad62c8022854c1cce00af17')
+            'umi 0x00' => [
+                'adr' => 'umi1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr5zcpj'
             ],
-            [
-                'bech32' => 'zzz1f24hf00u09dp2yxe6x3qutv6gaqkj3g4243qcshfqudtxl4uft9s06qt3y',
-                'prefix' => 'zzz',
-                'pubKey' => (string)hex2bin('4aab74bdfc795a1510d9d1a20e2d9a474169451555620c42e9071ab37ebc4acb')
+            'genesis 0xFF' => [
+                'adr' => 'genesis1llllllllllllllllllllllllllllllllllllllllllllllllllls5c7uy0'
             ],
-            [
-                'bech32' => 'genesis17gn68lpuymvflhn97f86pru7ex4dky7w9z4w33q9tsffqcwzwlvq6hhf6w',
-                'prefix' => 'genesis',
-                'pubKey' => (string)hex2bin('f227a3fc3c26d89fde65f24fa08f9ec9aadb13ce28aae8c4055c129061c277d8')
+            'genesis 0x00' => [
+                'adr' => 'genesis1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqkxaddc'
             ],
+            'aaa rand' => [
+                'adr' => 'aaa1nfgzzgkr3nd69jes5kw87s2tuv46mhmrqpnw8ksffaujycenxx6sl48tkv'
+            ]
         ];
     }
 
     /**
-     * @dataProvider invalidBech32Provider
+     * @dataProvider invalidAddressProvider
      */
-    public function testMustNotCreateFromInvalidBech32(string $bech32): void
+    public function testBech32Exception(string $address): void
     {
-        $this->expectException(Exception::class);
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('Exception');
+        } elseif (method_exists($this, 'setExpectedException')) {
+            $this->setExpectedException('Exception'); // PHPUnit 4
+        }
 
-        $adr = (new Address())->fromBech32($bech32);
+        $obj = new Address();
+        $obj->setBech32($address);
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<array <string, string>>
      */
-    public function invalidBech32Provider(): array
+    public function invalidAddressProvider(): array
     {
         return [
-            'too short 2' => ['umi1f24sls083w'],
-            'too long 34' => ['umi1f24jssl6x65yvx68sxvyqkzehhk0cyk5kh0z8gguqmk9fvv8gmgjvksztra4v'],
-            'too long 35' => ['umi19ppl5d4ggcd50qvcgpv9n00vlsfdfdw7yws3cphv2jccw3k3yedp9l7vjsmk5y'],
-            'invalid checksum' => ['umi1ejdtp93v7n5a555gjgft8llwfjlvxqf8j2lcenc05nzqx80rassscrqm4c'],
-            'short prefix 1' => ['a1yjua05u04qwrn0v3mgwu0dy9dzzy4je7cdcg0dwt97rxcsq865kqdrgha7'],
-            'long prefix 4' => ['abcd1gexh3fgy4zdz4zuw7wudm7ecuz22lmwa6dnzyryqftvpw3y4mzjs9kmrqv'],
-            'invalid prefix' => ['Umi17udjg8srp3e5huc0gs9teqss5vfy3qkvym05rz3rqm0gk48m5zdql79jwj'],
-        ];
-    }
-
-    /**
-     * @dataProvider validStringProvider
-     */
-    public function testMustCreateValidBech32FromValidString(string $bytes, string $bech32): void
-    {
-        $this->assertEquals(
-            $bech32,
-            (new Address($bytes))->toBech32()
-        );
-    }
-
-    /**
-     * @return array<int, array<string, string>>
-     */
-    public function validStringProvider(): array
-    {
-        return [
-            [
-                'bytes' => (string)hex2bin('55a954b1e8a606f8852f410284a779547c36f084e737d7dbca89a862d27304984941'),
-                'bech32' => 'umi12jc73fsxlzzj7sgzsjnhj4ruxmcgfeeh6ldu4zdgvtf8xpycf9qsagm0qt'
+            'invalid prefix 1' => [
+                'adr' => 'geneziz1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqwa7qv0'
             ],
-            [
-                'bytes' => (string)hex2bin('0000d7053ced226800d779a6e0e6902f281e1913c72d579ec143f8500e32b3e08cb3'),
-                'bech32' => 'genesis16uznemfzdqqdw7dxurnfqtegrcv383ed270vzslc2q8r9vlq3jesj4q8rt'
+            'invalid prefix 2' => [
+                'adr' => '+++1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq2trd4a'
             ],
+            'empty prefix' => [
+                'adr' => '1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqugay46'
+            ],
+            'invalid checksum' => [
+                'adr' => 'umi1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr5zcpf'
+            ],
+            'invalid character' => [
+                'adr' => 'umi1iqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr5zcpj'
+            ],
+            'no separator' => [
+                'adr' => 'umilqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr5zcpj'
+            ],
+            'too short' => [
+                'adr' => 'umi1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu5fmc9'
+            ],
+            'too long' => [
+                'adr' => 'umi1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq63dha7'
+            ],
+            'non-zero padding' => [
+                'adr' => 'umi1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqlfceute'
+            ]
         ];
     }
 }

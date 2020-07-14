@@ -1,172 +1,504 @@
-# umi-core-php
-UMI Core PHP Library
+<h1 align="center">
+  <a href="https://umi.top"><img src="https://umi-top.github.io/logo.svg" alt="UMI" width="200"></a>
+  <br>
+  UMI Core - PHP Library
+  <br>
+  <br>
+</h1>
 
-### Install
+<p align="center">
+  <!-- build      --><a href="https://travis-ci.org/umi-top/umi-core-php"><img alt="travis" src="https://travis-ci.com/umi-top/umi-core-php.svg?branch=master"></a>
+  <!-- Scrutinizer--><a href="https://scrutinizer-ci.com/g/umi-top/umi-core-php/?branch=master"><img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/umi-top/umi-core-php/badges/quality-score.png?b=master"></a>
+  <!-- coverage   --><a href='https://coveralls.io/github/umi-top/umi-core-php?branch=master'><img src='https://coveralls.io/repos/github/umi-top/umi-core-php/badge.svg?branch=master' alt='Coverage Status'></a>
+  <!-- code style --><a href="https://www.php-fig.org/psr/psr-12/"><img alt="PSR-12" src="https://img.shields.io/badge/code_style-PSR--12-green"></a>
+  <!-- license    --><a href="https://github.com/umi-top/umi-core-php/blob/master/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/umi-top/umi-core-php"></a>
+  <!-- PGP        --><a href="https://keybase.io/umitop"><img alt="Keybase PGP" src="https://img.shields.io/keybase/pgp/umitop"></a>
+  <br/>
+  <!-- release    --><a href="https://github.com/umi-top/umi-core-php"><img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/umi-top/umi-core-php?sort=semver"></a>
+  <!-- packagist  --><a href="https://packagist.org/packages/umi-top/umi-core-php"><img alt="Packagist Version" src="https://img.shields.io/packagist/v/umi-top/umi-core-php"></a>
+  <!-- php support--><img alt="Packagist PHP Version Support" src="https://img.shields.io/packagist/php-v/umi-top/umi-core-php">
+  <!-- downloads  --><img alt="Packagist Downloads" src="https://img.shields.io/packagist/dm/umi-top/umi-core-php">
+</p>
 
-    composer require umi-top/umi-core-php
+## Оглавление
+- [Введение](#введение)
+- [Установка](#установка)
+  - [Composer](#composer)
+- [Примеры](#примеры)
+  - [Мнемоники](#мнемоники)
+    - [Seed из мнемонической фразы](#seed-из-мнемонической-фразы)
+  - [Ключи](#ключи)
+    - [Ключ из seed](#ключ-из-seed)
+    - [Подписать сообщение](#подписать-сообщение)
+    - [Проверить подпись](#проверить-подпись)
+  - [Адреса](#адреса)
+    - [Адрес в формате Bech32](#адрес-в-формате-bech32)
+    - [Адрес из приватного или публичного ключа](#адрес-из-приватного-или-публичного-ключа)
+    - [Префикс](#префикс)
+  - [Транзакции](#транзакции)
+    - [Перевести монеты](#перевести-монеты)
+    - [Создать структуру](#создать-структуру)
+    - [Обновить настройки структуры](#обновить-настройки-структуры)
+    - [Установить адрес для начисления профита](#установить-адрес-для-начисления-профита)
+    - [Установить адрес для перевода комиссии](#установить-адрес-для-перевода-комиссии)
+    - [Активировать транзитный адрес](#активировать-транзитный-адрес)
+    - [Деактивировать транзитный адрес](#деактивировать-транзитный-адрес)
+    - [Отправить транзакцию в сеть](#отправить-транзакцию-в-сеть)
+- [Лицензия](#лицензия)
 
-### Addresses
-Create Address from Mnemonic
+## Введение
+
+Для работы библиотеки требуются 64-битная версия PHP >= 5.4 и стандартное
+расширение [hash](https://www.php.net/manual/en/function.hash.php).
+
+## Установка
+
+Библиотека опубликована в репозитории [Packagist](https://packagist.org) и может
+быть установлена с помощью менеджера зависимостей [Composer](https://getcomposer.org).
+
+### Composer
+
+```bash
+composer require umi-top/umi-core-php
+```
+
+## Примеры
+
+### Мнемоники
+
+UMI не накладывает никаких ограничений на способ генерации и хранения приватных
+ключей.  
+Для совместимости, рекомендуем использовать
+[bip39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki).
+
+#### Seed из мнемонической фразы
+
+Пример с использованием библиотеки [bitcoin-php](https://github.com/Bit-Wasp/bitcoin-php):
+
 ```php
 <?php declare(strict_types=1);
 
-include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
-use UmiTop\UmiCore\Key\SecretKeyFactory;
-use UmiTop\UmiCore\Address\AddressFactory;
 use BitWasp\Bitcoin\Mnemonic\Bip39\Bip39SeedGenerator;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Address\Address;
 
 $mnemonic = 'mix tooth like stock powder emerge protect index magic';
-$seed = (new Bip39SeedGenerator())->getSeed($mnemonic)->getBinary();
-$secKey = SecretKeyFactory::fromSeed($seed);
-$pubKey = $secKey->getPublicKey();
-$address = AddressFactory::fromPublicKey($pubKey);
 
-echo $address->toBech32(), PHP_EOL; // umi1u3dam33jaf64z4s008g7su62j4za72ljqff9dthsataq8k806nfsgrhdhg
+$bip39 = new Bip39SeedGenerator();
+$seed = $bip39->getSeed($mnemonic)->getBinary();
+
+$address = Address::fromKey(SecretKey::fromSeed($seed));
+
+echo $address->getBech32(), PHP_EOL;
 ```
-Change Address Prefix
+
+### Ключи
+
+В UMI применяется [Ed25519](https://ed25519.cr.yp.to)
+([RFC 8032](https://tools.ietf.org/html/rfc8032)) —
+схема подписи [EdDSA](https://ru.wikipedia.org/wiki/EdDSA) использующая
+[SHA-512](https://en.wikipedia.org/wiki/SHA-2)
+и [Curve25519](https://en.wikipedia.org/wiki/Curve25519). 
+
+#### Ключ из seed
+
+Seed может быть любой длины. Оптимальным вариантом является длина 32 байта.
+
 ```php
 <?php declare(strict_types=1);
 
-include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
-use UmiTop\UmiCore\Address\AddressFactory;
+use UmiTop\UmiCore\Key\SecretKey;
 
-$bech32 = 'umi1kzsn227tel8aj5p5upaecz7e72k3k8w0lel3lffrnvg3d5rkh5uq3a8598';
-$address = AddressFactory::fromBech32($bech32);
-$address->setPrefix('sss');
-
-echo $address->toBech32(), PHP_EOL; // sss1kzsn227tel8aj5p5upaecz7e72k3k8w0lel3lffrnvg3d5rkh5uqv9z0az
+$seed = random_bytes(32);
+$secKey = SecretKey::fromSeed($seed);
+$bytes = $secKey->getBytes();
 ```
 
-### Transactions
-Basic Transaction
+#### Подписать сообщение
+
 ```php
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
-include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
-use UmiTop\UmiCore\Key\SecretKeyFactory;
-use UmiTop\UmiCore\Address\AddressFactory;
+use UmiTop\UmiCore\Key\SecretKey;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$message = 'Hello World';
+$signature = $secKey->sign($message);
+
+echo base64_encode($signature), PHP_EOL;
+```
+
+#### Проверить подпись
+
+```php
+<?php declare(strict_types=1);
+      
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+
+$address = 'umi18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5s6rxnf6';
+$message = 'Hello World';
+$signature = base64_decode(
+    'Jbi9YfwLcxiTMednl/wTvnSzsPP9mV9Bf2vvZytP87oyg1p1c9ZBkn4gNv15ZHwEFv3bVYlowgyIKmMwJLjJCw=='
+);
+$pubKey = Address::fromBech32($address)->getPublicKey();
+$isValid = $pubKey->verifySignature($signature, $message);
+
+var_dump($isValid);
+```
+
+### Адреса
+
+UMI использует адреса в формате Bech32
+([bip173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki))
+длиной 62 символа. Префикс имеет длину 3 символа.  
+Специальным случаем являются Genesis-адреса, существующие только
+в Genesis-блоке, такие адреса имеют длину 65 символов
+и всегда имеют префикс `genesis`.
+
+#### Адрес в формате Bech32
+
+Создать адрес из строки Bech32 можно используя статический метод `Address::fromBech32()`
+и экспортировать с помощью `Address->getBech32()`:
+
+```php
+<?php declare(strict_types=1);
+      
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+
+$bech32 = 'umi18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5s6rxnf6';
+$address = Address::fromBech32($bech32);
+
+echo $address->getBech32(), PHP_EOL;
+```
+ 
+#### Адрес из приватного или публичного ключа
+
+Статический метод `Address::fromKey()` создает адрес из приватного
+или публичного ключа:
+
+```php
+<?php declare(strict_types=1);
+      
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Key\PublicKey;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$address1 = Address::fromKey($secKey);
+
+echo $address1->getBech32(), PHP_EOL;
+
+$pubKey = new PublicKey(random_bytes(32));
+$address2 = Address::fromKey($pubKey);
+
+echo $address2->getBech32(), PHP_EOL;
+```
+
+#### Префикс
+
+По умолчанию адреса имеют префикс `umi`.
+Изменить префикс можно с помощью метода `Address->setPrefix()`:
+
+```php
+<?php declare(strict_types=1);
+      
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+
+$bech32 = 'umi18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5s6rxnf6';
+$address = Address::fromBech32($bech32)->setPrefix('aaa');
+
+echo $bech32, PHP_EOL;
+echo $address->getBech32(), PHP_EOL;
+```
+
+### Транзакции
+
+#### Перевести монеты
+
+Поля `sender`, `recipient` и `value` являются обязательными.  
+Сумма указывается в UMI-центах, т.е. 1.23 UMI = 123.
+
+```php
+<?php declare(strict_types=1);
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
 use UmiTop\UmiCore\Transaction\Transaction;
-use BitWasp\Bitcoin\Mnemonic\Bip39\Bip39SeedGenerator;
 
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
+$recipient = Address::fromKey($secKey)->setPrefix('aaa');
+$value = 42;
 
-$mnemonic = 'mix tooth like stock powder emerge protect index magic';
-$bech32 = 'xxx1hztcwh6rh63ftkw8y8cwt63n4256u3packsxh05wv5x5cpa79raqyf98d5';
-
-$seed = (new Bip39SeedGenerator())->getSeed($mnemonic)->getBinary();
-$secKey = SecretKeyFactory::fromSeed($seed);
-$sender = AddressFactory::fromSecretKey($secKey);
-$recipient = AddressFactory::fromBech32($bech32);
-
-$tx1 = (new Transaction())
-    ->setVersion(Transaction::BASIC)
+$trx = new Transaction();
+$trx->setVersion(Transaction::BASIC)
     ->setSender($sender)
     ->setRecipient($recipient)
-    ->setValue(gmp_init('18446744073709551615'))
+    ->setValue($value)
     ->sign($secKey);
 
-$tx2 = new Transaction($tx1->toBytes());
-
-var_dump(
-    [
-        'hash' => bin2hex($tx2->getHash()),
-        'version' => $tx2->getVersion(),
-        'sender' => $tx2->getSender()->toBech32(),
-        'recipient' => $tx2->getRecipient()->toBech32(),
-        'value' => gmp_strval($tx2->getValue()),
-        'signature' => bin2hex($tx2->getSignature()),
-        'verify' => $tx2->verify()
-    ]
-);
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
 ```
-Create Structure
+
+#### Создать структуру
+
+Поля `sender`, `prefix`, `name`, `profitPercent` и `feePercent` являются
+обязательными.  
+Префикс имеет длину 3 символа. Название указывается в кодировке UTF-8 и может
+иметь длину до 35 байтов. Проценты указываются в сотых долях процента,
+т.е. 1.23% = 123.
+
 ```php
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
+include __DIR__ . '/../vendor/autoload.php';
 
-include __DIR__ . '/vendor/autoload.php';
-
-use UmiTop\UmiCore\Key\SecretKeyFactory;
-use UmiTop\UmiCore\Address\AddressFactory;
-use UmiTop\UmiCore\Transaction\Transaction;
-use BitWasp\Bitcoin\Mnemonic\Bip39\Bip39SeedGenerator;
-
-
-$mnemonic = 'mix tooth like stock powder emerge protect index magic';
-$bech32 = 'xxx1hztcwh6rh63ftkw8y8cwt63n4256u3packsxh05wv5x5cpa79raqyf98d5';
-
-$seed = (new Bip39SeedGenerator())->getSeed($mnemonic)->getBinary();
-$secKey = SecretKeyFactory::fromSeed($seed);
-
-$tx1 = (new Transaction())
-    ->setVersion(Transaction::CREATE_STRUCTURE)
-    ->setSender(AddressFactory::fromSecretKey($secKey))
-    ->setPrefix('www')
-    ->setName('World Wide Web')
-    ->setProfitPercent(456) // 4.56%
-    ->setFeePercent(1234) // 12.34%
-    ->sign($secKey);
-
-$tx2 = new Transaction($tx1->toBytes());
-
-var_dump(
-    [
-        'hash' => bin2hex($tx2->getHash()),
-        'version' => $tx2->getVersion(),
-        'sender' => $tx2->getSender()->toBech32(),
-        'prefix' => $tx2->getPrefix(),
-        'name' => $tx2->getName(),
-        'profit' => $tx2->getProfitPercent(),
-        'fee' => $tx2->getFeePercent(),
-        'verify' => $tx2->verify()
-    ]
-);
-```
-Create Transit Address
-```php
-<?php
-
-declare(strict_types=1);
-
-include __DIR__ . '/vendor/autoload.php';
-
-use UmiTop\UmiCore\Key\SecretKeyFactory;
 use UmiTop\UmiCore\Address\Address;
-use UmiTop\UmiCore\Address\AddressFactory;
+use UmiTop\UmiCore\Key\SecretKey;
 use UmiTop\UmiCore\Transaction\Transaction;
-use BitWasp\Bitcoin\Mnemonic\Bip39\Bip39SeedGenerator;
 
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
 
-$mnemonic = 'mix tooth like stock powder emerge protect index magic';
-$seed = (new Bip39SeedGenerator())->getSeed($mnemonic)->getBinary();
-$secKey = SecretKeyFactory::fromSeed($seed);
+$trx = new Transaction();
+$trx->setVersion(Transaction::CREATE_STRUCTURE)
+    ->setSender($sender)
+    ->setPrefix('aaa')
+    ->setName('🙂')
+    ->setProfitPercent(500)
+    ->setFeePercent(2000)
+    ->sign($secKey);
 
-$sender = new Address();
-$sender->setPublicKey($secKey->getPublicKey());
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
+```
 
-$address = new Address();
-$address->fromBech32('www1hztcwh6rh63ftkw8y8cwt63n4256u3packsxh05wv5x5cpa79raq9g5cvs');
+#### Обновить настройки структуры
 
-$tx1 = new Transaction();
-$tx1->setVersion(Transaction::CREATE_TRANSIT_ADDRESS);
-$tx1->setSender($sender);
-$tx1->setRecipient($address);
-$tx1->sign($secKey);
+Поля `sender`, `prefix`, `name`, `profitPercent` и `feePercent` являются
+обязательными.  
+Необходимо задать все поля, даже если они не изменились.
 
-$tx2 = new Transaction($tx1->toBytes());
+```php
+<?php declare(strict_types=1);
 
-var_dump(
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Transaction\Transaction;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
+
+$trx = new Transaction();
+$trx->setVersion(Transaction::UPDATE_STRUCTURE)
+    ->setSender($sender)
+    ->setPrefix('aaa')
+    ->setName('🙂')
+    ->setProfitPercent(500)
+    ->setFeePercent(2000)
+    ->sign($secKey);
+
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
+```
+
+#### Установить адрес для начисления профита
+
+Поля `sender` и `recipient` являются обязательными.  
+Адрес для начисления профита должен принадлежать структуре.
+
+```php
+<?php declare(strict_types=1);
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Transaction\Transaction;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
+$newPrf = Address::fromBech32('aaa18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5svsuw66');
+
+$trx = new Transaction();
+$trx->setVersion(Transaction::UPDATE_PROFIT_ADDRESS)
+    ->setSender($sender)
+    ->setRecipient($newPrf)
+    ->sign($secKey);
+
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
+```
+
+#### Установить адрес для перевода комиссии
+
+Поля `sender` и `recipient` являются обязательными.  
+Адрес для перевода комиссии должен принадлежать структуре.
+
+```php
+<?php declare(strict_types=1);
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Transaction\Transaction;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
+$newFee = Address::fromBech32('aaa18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5svsuw66');
+
+$trx = new Transaction();
+$trx->setVersion(Transaction::UPDATE_FEE_ADDRESS)
+    ->setSender($sender)
+    ->setRecipient($newFee)
+    ->sign($secKey);
+
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
+```
+
+#### Активировать транзитный адрес
+
+Поля `sender` и `recipient` являются обязательными.  
+Адрес должен принадлежать структуре.
+
+```php
+<?php declare(strict_types=1);
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Transaction\Transaction;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
+$transit = Address::fromBech32('aaa18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5svsuw66');
+
+$trx = new Transaction();
+$trx->setVersion(Transaction::CREATE_TRANSIT_ADDRESS)
+    ->setSender($sender)
+    ->setRecipient($transit)
+    ->sign($secKey);
+
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
+```
+
+#### Деактивировать транзитный адрес
+
+Поля `sender` и `recipient` являются обязательными.  
+Адрес должен принадлежать структуре.
+
+```php
+<?php declare(strict_types=1);
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Address\Address;
+use UmiTop\UmiCore\Key\SecretKey;
+use UmiTop\UmiCore\Transaction\Transaction;
+
+$secKey = SecretKey::fromSeed(random_bytes(32));
+$sender = Address::fromKey($secKey)->setPrefix('umi');
+$transit = Address::fromBech32('aaa18d4z00xwk6jz6c4r4rgz5mcdwdjny9thrh3y8f36cpy2rz6emg5svsuw66');
+
+$trx = new Transaction();
+$trx->setVersion(Transaction::DELETE_TRANSIT_ADDRESS)
+    ->setSender($sender)
+    ->setRecipient($transit)
+    ->sign($secKey);
+
+echo 'txid:   ', bin2hex($trx->getHash()), PHP_EOL;
+echo 'base64: ', base64_encode($trx->getBytes()), PHP_EOL;
+```
+
+#### Отправить транзакцию в сеть
+
+Пример с использованием расширений
+[cURL](https://www.php.net/manual/en/book.curl.php)
+и [JSON](https://www.php.net/manual/en/book.json.php):
+
+```php
+<?php declare(strict_types=1);
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use UmiTop\UmiCore\Transaction\Transaction;
+
+$trx = new Transaction();
+
+$payload = json_encode(
     [
-        'hash' => bin2hex($tx2->getHash()),
-        'version' => $tx2->getVersion(),
-        'sender' => $tx2->getSender()->toBech32(),
-        'prefix' => $tx2->getPrefix(),
-        'address' => $tx2->getRecipient()->toBech32(),
-        'verify' => $tx2->verify()
+        'jsonrpc' => '2.0',
+        'id' => '',
+        'method' => 'sendTransaction',
+        'params' => [
+            'base64' => base64_encode($trx->getBytes())
+        ]
     ]
 );
+
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, "https://testnet.umi.top/json-rpc");
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HEADER, false);
+curl_setopt($ch, CURLOPT_VERBOSE, true);
+
+$response = curl_exec($ch);
+
+curl_close($ch);
+
+echo $response, PHP_EOL;
+```
+
+## Лицензия
+
+```text
+Лицензия MIT
+
+Copyright © 2020 UMI
+
+Данная лицензия разрешает лицам, получившим копию данного программного
+обеспечения и сопутствующей документации (в дальнейшем именуемыми
+«Программное обеспечение»), безвозмездно использовать Программное обеспечение
+без ограничений, включая неограниченное право на использование, копирование,
+изменение, слияние, публикацию, распространение, сублицензирование и/или
+продажу копий Программного обеспечения, а также лицам, которым предоставляется
+данное Программное обеспечение, при соблюдении следующих условий:
+
+Указанное выше уведомление об авторском праве и данные условия должны быть
+включены во все копии или значимые части данного Программного обеспечения.
+
+ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО
+ГАРАНТИЙ, ЯВНО ВЫРАЖЕННЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ ГАРАНТИИ ТОВАРНОЙ
+ПРИГОДНОСТИ, СООТВЕТСТВИЯ ПО ЕГО КОНКРЕТНОМУ НАЗНАЧЕНИЮ И ОТСУТСТВИЯ НАРУШЕНИЙ,
+НО НЕ ОГРАНИЧИВАЯСЬ ИМИ. НИ В КАКОМ СЛУЧАЕ АВТОРЫ ИЛИ ПРАВООБЛАДАТЕЛИ НЕ НЕСУТ
+ОТВЕТСТВЕННОСТИ ПО КАКИМ-ЛИБО ИСКАМ, ЗА УЩЕРБ ИЛИ ПО ИНЫМ ТРЕБОВАНИЯМ, В ТОМ
+ЧИСЛЕ, ПРИ ДЕЙСТВИИ КОНТРАКТА, ДЕЛИКТЕ ИЛИ ИНОЙ СИТУАЦИИ, ВОЗНИКШИМ ИЗ-ЗА
+ИСПОЛЬЗОВАНИЯ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ИНЫХ ДЕЙСТВИЙ С ПРОГРАММНЫМ
+ОБЕСПЕЧЕНИЕМ. 
 ```
