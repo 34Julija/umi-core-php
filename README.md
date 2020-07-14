@@ -17,8 +17,8 @@
   <br/>
   <!-- release    --><a href="https://github.com/umi-top/umi-core-php"><img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/umi-top/umi-core-php?sort=semver"></a>
   <!-- packagist  --><a href="https://packagist.org/packages/umi-top/umi-core-php"><img alt="Packagist Version" src="https://img.shields.io/packagist/v/umi-top/umi-core-php"></a>
-  <!-- php support--><img alt="Packagist PHP Version Support" src="https://img.shields.io/packagist/php-v/umi-top/umi-core-php">
-  <!-- downloads  --><img alt="Packagist Downloads" src="https://img.shields.io/packagist/dm/umi-top/umi-core-php">
+  <!-- php support--><a href="https://github.com/umi-top/umi-core-php"><img alt="PHP Version Support" src="https://img.shields.io/badge/php-%20%3E%3D5.4-blue"></a>
+  <!-- downloads  --><a href="https://packagist.org/packages/umi-top/umi-core-php"><img alt="Packagist Downloads" src="https://img.shields.io/packagist/dm/umi-top/umi-core-php"></a>
 </p>
 
 ## Оглавление
