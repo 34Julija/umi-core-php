@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Address;
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +8,7 @@ use UmiTop\UmiCore\Key\PublicKey;
 
 class AddressTest extends TestCase
 {
-    public function testFromBech32(): void
+    public function testFromBech32()
     {
         $expected = 'umi1lllllllllllllllllllllllllllllllllllllllllllllllllllsp2pfg9';
         $actual = Address::fromBech32($expected)->getBech32();
@@ -18,7 +16,7 @@ class AddressTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testFromBytes(): void
+    public function testFromBytes()
     {
         $expected = str_repeat("\x01", Address::LENGTH);
         $actual = Address::fromBytes($expected)->getBytes();
@@ -26,7 +24,7 @@ class AddressTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testFromKey(): void
+    public function testFromKey()
     {
         $key = new PublicKey(str_repeat("\xff", PublicKey::LENGTH));
 
@@ -36,7 +34,7 @@ class AddressTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testSetBytesException(): void
+    public function testSetBytesException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -49,7 +47,7 @@ class AddressTest extends TestCase
         $obj->setBytes($bytes);
     }
 
-    public function testPrefix(): void
+    public function testPrefix()
     {
         $expected = 'aaa';
 
@@ -59,7 +57,7 @@ class AddressTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testPublicKey(): void
+    public function testPublicKey()
     {
         $bytes = str_repeat("\xff", PublicKey::LENGTH);
         $pubKey = new PublicKey($bytes);
@@ -74,7 +72,7 @@ class AddressTest extends TestCase
     /**
      * @dataProvider validAddressProvider
      */
-    public function testBech32(string $expected): void
+    public function testBech32($expected)
     {
         $obj = new Address();
         $actual = $obj->setBech32($expected)->getBech32();
@@ -85,7 +83,7 @@ class AddressTest extends TestCase
     /**
      * @return array<array <string, string>>
      */
-    public function validAddressProvider(): array
+    public function validAddressProvider()
     {
         return [
             'umi 0xFF' => [
@@ -109,7 +107,7 @@ class AddressTest extends TestCase
     /**
      * @dataProvider invalidAddressProvider
      */
-    public function testBech32Exception(string $address): void
+    public function testBech32Exception($address)
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -124,7 +122,7 @@ class AddressTest extends TestCase
     /**
      * @return array<array <string, string>>
      */
-    public function invalidAddressProvider(): array
+    public function invalidAddressProvider()
     {
         return [
             'invalid prefix 1' => [

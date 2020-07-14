@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Key;
 
 use PHPUnit\Framework\TestCase;
@@ -9,7 +7,7 @@ use UmiTop\UmiCore\Key\PublicKey;
 
 class PublicKeyTest extends TestCase
 {
-    public function testConstructorException(): void
+    public function testConstructorException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -24,7 +22,7 @@ class PublicKeyTest extends TestCase
     /**
      * @dataProvider signatureProvider
      */
-    public function testVerifySignature(string $key, string $msg, string $sig, bool $expected): void
+    public function testVerifySignature($key, $msg, $sig, $expected)
     {
         $pubKey = new PublicKey(base64_decode($key));
         $signature = base64_decode($sig);
@@ -36,7 +34,7 @@ class PublicKeyTest extends TestCase
     /**
      * @return array<string, array<string, string|bool>>
      */
-    public function signatureProvider(): array
+    public function signatureProvider()
     {
         return [
             'valid' => [

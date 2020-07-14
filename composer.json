@@ -21,7 +21,7 @@
         }
     },
     "require": {
-        "php-64bit": ">=7.1",
+        "php-64bit": ">=5.4",
         "ext-hash": "*"
     },
     "suggest": {

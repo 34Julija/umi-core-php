@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Key\Ed25519;
 
 use Exception;
@@ -38,7 +36,7 @@ use UmiTop\UmiCore\Util\Ed25519\Ed25519;
 class SecretKey implements SecretKeyInterface
 {
     /** @var int Длина приватного ключа в байтах. */
-    public const LENGTH = 64;
+    const LENGTH = 64;
 
     /** @var string Приватный ключ в бинарном виде. */
     private $bytes;
@@ -48,7 +46,7 @@ class SecretKey implements SecretKeyInterface
      * @param string $bytes Приватный ключ в бинарном виде. В формате libsodium, 64 байта.
      * @throws Exception
      */
-    public function __construct(string $bytes)
+    public function __construct($bytes)
     {
         if (strlen($bytes) !== self::LENGTH) {
             throw new Exception('secret key size should be 64 bytes');
@@ -64,7 +62,7 @@ class SecretKey implements SecretKeyInterface
      * @return SecretKeyInterface
      * @codeCoverageIgnore
      */
-    public static function fromSeed(string $seed): SecretKeyInterface
+    public static function fromSeed($seed)
     {
         if (strlen($seed) !== Ed25519::SEED_BYTES) {
             $seed = hash('sha256', $seed, true);
@@ -88,7 +86,7 @@ class SecretKey implements SecretKeyInterface
      * Приватный ключ в бинарном виде. В формате libsodium, 64 байта.
      * @return string
      */
-    public function getBytes(): string
+    public function getBytes()
     {
         return $this->bytes;
     }
@@ -97,7 +95,7 @@ class SecretKey implements SecretKeyInterface
      * Публичный ключ, соответствующий приватному ключу.
      * @return PublicKeyInterface
      */
-    public function getPublicKey(): PublicKeyInterface
+    public function getPublicKey()
     {
         return new PublicKey(substr($this->bytes, 32, 32));
     }
@@ -108,7 +106,7 @@ class SecretKey implements SecretKeyInterface
      * @return string
      * @codeCoverageIgnore
      */
-    public function sign(string $message): string
+    public function sign($message)
     {
         if (function_exists('sodium_crypto_sign_detached') === true) {
             return sodium_crypto_sign_detached($message, $this->bytes);

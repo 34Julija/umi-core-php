@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Address;
 
 use Exception;
@@ -44,7 +42,7 @@ class Address implements AddressInterface
     use ValidatorTrait;
 
     /** @var int Длина адреса в байтах. */
-    public const LENGTH = 34;
+    const LENGTH = 34;
 
     /** @var string Адрес в бинарном виде. */
     private $bytes;
@@ -64,7 +62,7 @@ class Address implements AddressInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public static function fromBech32(string $address): AddressInterface
+    public static function fromBech32($address)
     {
         $adr = new Address();
 
@@ -77,7 +75,7 @@ class Address implements AddressInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public static function fromBytes(string $bytes): AddressInterface
+    public static function fromBytes($bytes)
     {
         $adr = new Address();
 
@@ -89,7 +87,7 @@ class Address implements AddressInterface
      * @param KeyInterface $key Приватный или публичный ключ.
      * @return AddressInterface
      */
-    public static function fromKey(KeyInterface $key): AddressInterface
+    public static function fromKey(KeyInterface $key)
     {
         $adr = new Address();
 
@@ -100,7 +98,7 @@ class Address implements AddressInterface
      * Адрес в формате Bech32, длина 62 или 65 символов.
      * @return string
      */
-    public function getBech32(): string
+    public function getBech32()
     {
         $bech32 = new Bech32();
 
@@ -113,7 +111,7 @@ class Address implements AddressInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public function setBech32(string $address): AddressInterface
+    public function setBech32($address)
     {
         $bech32 = new Bech32();
 
@@ -124,7 +122,7 @@ class Address implements AddressInterface
      * Адрес в бинарном виде, длина 34 байта.
      * @return string
      */
-    public function getBytes(): string
+    public function getBytes()
     {
         return $this->bytes;
     }
@@ -135,7 +133,7 @@ class Address implements AddressInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public function setBytes(string $bytes): AddressInterface
+    public function setBytes($bytes)
     {
         $this->validateStr($bytes, self::LENGTH);
         $this->bytes = $bytes;
@@ -148,7 +146,7 @@ class Address implements AddressInterface
      * @return string
      * @throws Exception
      */
-    public function getPrefix(): string
+    public function getPrefix()
     {
         return $this->bytesToPrefix(substr($this->bytes, 0, 2));
     }
@@ -159,7 +157,7 @@ class Address implements AddressInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public function setPrefix(string $prefix): AddressInterface
+    public function setPrefix($prefix)
     {
         $this->bytes = substr_replace($this->bytes, $this->prefixToBytes($prefix), 0, 2);
 
@@ -170,7 +168,7 @@ class Address implements AddressInterface
      * Публичный ключ.
      * @return PublicKeyInterface
      */
-    public function getPublicKey(): PublicKeyInterface
+    public function getPublicKey()
     {
         return new PublicKey(substr($this->bytes, 2, 32));
     }
@@ -180,7 +178,7 @@ class Address implements AddressInterface
      * @param PublicKeyInterface $publicKey Публичный ключ.
      * @return AddressInterface
      */
-    public function setPublicKey(PublicKeyInterface $publicKey): AddressInterface
+    public function setPublicKey(PublicKeyInterface $publicKey)
     {
         $this->bytes = substr_replace($this->bytes, $publicKey->getBytes(), 2, 32);
 

@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Util;
 
 use Exception;
@@ -40,7 +38,7 @@ trait ConverterTrait
      * @return string
      * @throws Exception
      */
-    private function versionToPrefix(int $version): string
+    private function versionToPrefix($version)
     {
         if ($version === 0) {
             return 'genesis';
@@ -61,7 +59,7 @@ trait ConverterTrait
      * @return string
      * @throws Exception
      */
-    private function bytesToPrefix(string $bytes): string
+    private function bytesToPrefix($bytes)
     {
         return $this->versionToPrefix($this->bytesToUint16($bytes));
     }
@@ -72,7 +70,7 @@ trait ConverterTrait
      * @return int
      * @throws Exception
      */
-    private function prefixToVersion(string $prefix): int
+    private function prefixToVersion($prefix)
     {
         if ($prefix === 'genesis') {
             return 0;
@@ -97,16 +95,17 @@ trait ConverterTrait
      * @return string
      * @throws Exception
      */
-    private function prefixToBytes(string $prefix): string
+    private function prefixToBytes($prefix)
     {
         return $this->uint16ToBytes($this->prefixToVersion($prefix));
     }
 
     /**
      * @param array<int, int> $chars
+     * @return void
      * @throws Exception
      */
-    private function checkPrefixChars(array $chars): void
+    private function checkPrefixChars(array $chars)
     {
         foreach ($chars as $chr) {
             if ($chr < 1 || $chr > 26) {
@@ -119,7 +118,7 @@ trait ConverterTrait
      * @param int $value
      * @return string
      */
-    private function uint16ToBytes(int $value): string
+    private function uint16ToBytes($value)
     {
         return (chr($value >> 8 & 0xff) . chr($value & 0xff));
     }
@@ -128,7 +127,7 @@ trait ConverterTrait
      * @param string $bytes
      * @return int
      */
-    private function bytesToUint16(string $bytes): int
+    private function bytesToUint16($bytes)
     {
         return ((ord($bytes[0]) << 8) + ord($bytes[1]));
     }
@@ -137,7 +136,7 @@ trait ConverterTrait
      * @param int $value
      * @return string
      */
-    private function int64ToBytes(int $value): string
+    private function int64ToBytes($value)
     {
         return chr($value >> 56 & 0xff) . chr($value >> 48 & 0xff) . chr($value >> 40 & 0xff)
             . chr($value >> 32 & 0xff) . chr($value >> 24 & 0xff) . chr($value >> 16 & 0xff)
@@ -148,7 +147,7 @@ trait ConverterTrait
      * @param string $bytes
      * @return int
      */
-    private function bytesToInt64(string $bytes): int
+    private function bytesToInt64($bytes)
     {
         return (ord($bytes[0]) << 56) | (ord($bytes[1]) << 48) | (ord($bytes[2]) << 40) | (ord($bytes[3]) << 32)
             | (ord($bytes[4]) << 24) | (ord($bytes[5]) << 16) | (ord($bytes[6]) << 8) | (ord($bytes[7]));

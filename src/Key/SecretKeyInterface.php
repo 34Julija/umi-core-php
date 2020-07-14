@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Key;
 
 /**
@@ -37,5 +35,5 @@ interface SecretKeyInterface extends KeyInterface
      * @param string $message Сообщение в бинарном виде.
      * @return string
      */
-    public function sign(string $message): string;
+    public function sign($message);
 }

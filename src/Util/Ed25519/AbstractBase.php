@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Util\Ed25519;
 
 /**
@@ -37,13 +35,13 @@ namespace UmiTop\UmiCore\Util\Ed25519;
 abstract class AbstractBase
 {
     /** @var int */
-    public const PUBLIC_KEY_BYTES = 32;
+    const PUBLIC_KEY_BYTES = 32;
 
     /** @var int */
-    public const SECRET_KEY_BYTES = 64;
+    const SECRET_KEY_BYTES = 64;
 
     /** @var int */
-    public const SEED_BYTES = 32;
+    const SEED_BYTES = 32;
 
     /** @var array<int, int> */
     protected $D2;
@@ -104,8 +102,9 @@ abstract class AbstractBase
 
     /**
      * @param array<int, int> $o
+     * @return void
      */
-    protected function car25519(array &$o): void
+    protected function car25519(array &$o)
     {
         for ($i = 0; $i < 16; $i++) {
             $o[$i] += (1 << 16);
@@ -120,7 +119,7 @@ abstract class AbstractBase
      * @param string $y
      * @return bool
      */
-    protected function cryptoVerify32(string $x, string $y): bool
+    protected function cryptoVerify32($x, $y)
     {
         $d = 0;
         for ($i = 0; $i < 32; $i++) {
@@ -134,8 +133,9 @@ abstract class AbstractBase
      * @param array<int, int> $o
      * @param array<int, int> $a
      * @param array<int, int> $b
+     * @return void
      */
-    protected function fnA(array &$o, array $a, array $b): void
+    protected function fnA(array &$o, array $a, array $b)
     {
         for ($i = 0; $i < 16; $i++) {
             $o[$i] = $a[$i] + $b[$i];
@@ -146,8 +146,9 @@ abstract class AbstractBase
      * @param array<int, int> $o
      * @param array<int, int> $a
      * @param array<int, int> $b
+     * @return void
      */
-    protected function fnM(array &$o, array $a, array $b): void
+    protected function fnM(array &$o, array $a, array $b)
     {
         $t = array_fill(0, 31, 0);
 
@@ -171,8 +172,9 @@ abstract class AbstractBase
      * @param array<int, int> $o
      * @param array<int, int> $a
      * @param array<int, int> $b
+     * @return void
      */
-    protected function fnZ(array &$o, array $a, array $b): void
+    protected function fnZ(array &$o, array $a, array $b)
     {
         for ($i = 0; $i < 16; $i++) {
             $o[$i] = $a[$i] - $b[$i];

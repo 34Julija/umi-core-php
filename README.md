@@ -7,10 +7,11 @@
 </h1>
 
 <p align="center">
-  <!-- build      --><a href="https://travis-ci.org/umi-top/umi-core-php"><img alt="travis" src="https://travis-ci.com/umi-top/umi-core-php.svg?branch=master"></a>
+  <!-- build      --><a href="https://travis-ci.org/umi-top/umi-core-php"><img alt="travis" src="https://travis-ci.com/umi-top/umi-core-php.svg?branch=php54"></a>
+  <!-- codacy     --><a href="https://www.codacy.com/manual/umi-top/umi-core-php"><img src="https://app.codacy.com/project/badge/Grade/bc10c85e29084fa5ae3a2b69a7121ac6"/></a>
   <!-- Scrutinizer--><a href="https://scrutinizer-ci.com/g/umi-top/umi-core-php/?branch=master"><img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/umi-top/umi-core-php/badges/quality-score.png?b=master"></a>
   <!-- coverage   --><a href='https://coveralls.io/github/umi-top/umi-core-php?branch=master'><img src='https://coveralls.io/repos/github/umi-top/umi-core-php/badge.svg?branch=master' alt='Coverage Status'></a>
-  <!-- code style --><a href="https://www.php-fig.org/psr/psr-12/"><img alt="PSR-12" src="https://img.shields.io/badge/code_style-PSR--12-green"></a>
+  <!-- code style --><a href="https://www.php-fig.org/psr/psr-2/"><img alt="PSR-2" src="https://img.shields.io/badge/code_style-PSR--2-green"></a>
   <!-- license    --><a href="https://github.com/umi-top/umi-core-php/blob/master/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/umi-top/umi-core-php"></a>
   <!-- PGP        --><a href="https://keybase.io/umitop"><img alt="Keybase PGP" src="https://img.shields.io/keybase/pgp/umitop"></a>
   <br/>

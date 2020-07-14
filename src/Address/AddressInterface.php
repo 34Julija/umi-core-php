@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Address;
 
 use UmiTop\UmiCore\Key\PublicKeyInterface;
@@ -38,51 +36,51 @@ interface AddressInterface
      * Адрес в формате Bech32, длина 62 или 65 символов.
      * @return string
      */
-    public function getBech32(): string;
+    public function getBech32();
 
     /**
      * Устанавливает адрес из строки в формате Bech32 и возвращает $this.
      * @param string $bech32
      * @return AddressInterface
      */
-    public function setBech32(string $bech32): AddressInterface;
+    public function setBech32($bech32);
 
     /**
      * Адрес в бинарном виде, длина 34 байта.
      * @return string
      */
-    public function getBytes(): string;
+    public function getBytes();
 
     /**
      * Устанавливает адрес из бинарной строки и возвращает $this.
      * @param string $bytes Адрес в бинарном виде, длина 34 байта.
      * @return AddressInterface
      */
-    public function setBytes(string $bytes): AddressInterface;
+    public function setBytes($bytes);
 
     /**
      * Префикс адреса, три символа латиницы в нижнем регистре.
      * @return string
      */
-    public function getPrefix(): string;
+    public function getPrefix();
 
     /**
      * Устанавливает префикс адреса и возвращает $this.
      * @param string $prefix Префикс. Три символа латиницы в нижнем регистре.
      * @return AddressInterface
      */
-    public function setPrefix(string $prefix): AddressInterface;
+    public function setPrefix($prefix);
 
     /**
      * Публичный ключ.
      * @return PublicKeyInterface
      */
-    public function getPublicKey(): PublicKeyInterface;
+    public function getPublicKey();
 
     /**
      * Устанавливает публичный ключи и возвращает $this.
      * @param PublicKeyInterface $publicKey Публичный ключ.
      * @return AddressInterface
      */
-    public function setPublicKey(PublicKeyInterface $publicKey): AddressInterface;
+    public function setPublicKey(PublicKeyInterface $publicKey);
 }

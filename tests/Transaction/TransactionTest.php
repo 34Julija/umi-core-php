@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Transaction;
 
 use PHPUnit\Framework\TestCase;
@@ -15,7 +13,7 @@ use UmiTop\UmiCore\Key\SecretKey;
  */
 class TransactionTest extends TestCase
 {
-    public function testFromBytes(): void
+    public function testFromBytes()
     {
         $bytes = str_repeat("\x0", Transaction::LENGTH);
         $actual = Transaction::fromBytes($bytes)->getBytes();
@@ -23,7 +21,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($bytes, $actual);
     }
 
-    public function testSetBytesException(): void
+    public function testSetBytesException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -36,7 +34,7 @@ class TransactionTest extends TestCase
         $obj->setBytes($bytes);
     }
 
-    public function testHash(): void
+    public function testHash()
     {
         $base64 = 'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
             . 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
@@ -48,7 +46,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testVersion(): void
+    public function testVersion()
     {
         $expected = Transaction::CREATE_TRANSIT_ADDRESS;
         $trx = new Transaction();
@@ -57,7 +55,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testIncorrectVersionException(): void
+    public function testIncorrectVersionException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -69,7 +67,7 @@ class TransactionTest extends TestCase
         $trx->setPrefix('aaa');
     }
 
-    public function testSender(): void
+    public function testSender()
     {
         $adr = new Address();
         $adr->setBytes(str_repeat("\x11", Address::LENGTH));
@@ -81,7 +79,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testRecipient(): void
+    public function testRecipient()
     {
         $adr = new Address();
         $adr->setBytes(str_repeat("\x22", Address::LENGTH));
@@ -93,7 +91,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testValue(): void
+    public function testValue()
     {
         $expected = 9223372036854775807; // PHP_INT_MAX
         $trx = new Transaction();
@@ -102,7 +100,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testNonce(): void
+    public function testNonce()
     {
         $expected = -9223372036854775807; // PHP_INT_MIN
         $trx = new Transaction();
@@ -111,7 +109,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testPrefix(): void
+    public function testPrefix()
     {
         $expected = 'zzz';
         $trx = new Transaction();
@@ -120,7 +118,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testNameException(): void
+    public function testNameException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -133,7 +131,7 @@ class TransactionTest extends TestCase
         $trx->setVersion(Transaction::CREATE_STRUCTURE)->setName($name);
     }
 
-    public function testNameExceptionBytes(): void
+    public function testNameExceptionBytes()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -149,7 +147,7 @@ class TransactionTest extends TestCase
         $trx->setBytes($bytes)->getName();
     }
 
-    public function testName(): void
+    public function testName()
     {
         $expected = 'Hello World!';
         $trx = new Transaction();
@@ -158,7 +156,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testProfitPercentException(): void
+    public function testProfitPercentException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -170,7 +168,7 @@ class TransactionTest extends TestCase
         $trx->setVersion(Transaction::CREATE_STRUCTURE)->setProfitPercent(99);
     }
 
-    public function testProfitPercent(): void
+    public function testProfitPercent()
     {
         $expected = 100;
         $trx = new Transaction();
@@ -179,7 +177,7 @@ class TransactionTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testFeePercentException(): void
+    public function testFeePercentException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -191,7 +189,7 @@ class TransactionTest extends TestCase
         $trx->setVersion(Transaction::CREATE_STRUCTURE)->setFeePercent(2001);
     }
 
-    public function testFeePercent(): void
+    public function testFeePercent()
     {
         $expected = 100;
         $trx = new Transaction();
@@ -203,7 +201,7 @@ class TransactionTest extends TestCase
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function testSign(): void
+    public function testSign()
     {
         $key = SecretKey::fromSeed(str_repeat("\x42", 32));
         $adr = new Address();
@@ -215,7 +213,7 @@ class TransactionTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    public function testVerify(): void
+    public function testVerify()
     {
         $sig = base64_decode(
             'u04f+NK+ib+hQU7g/HYeQr9BjZbgZgOJidoW3YhNYM8ZI48Z8vT4kvbdqH9V2iX4z8XLr9Ay3x69eQSB6/KlCw=='

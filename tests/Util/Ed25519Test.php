@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Util;
 
 use PHPUnit\Framework\TestCase;
@@ -12,7 +10,7 @@ use UmiTop\UmiCore\Util\Ed25519\Ed25519;
  */
 class Ed25519Test extends TestCase
 {
-    public function testSecretKeyFromSeed(): void
+    public function testSecretKeyFromSeed()
     {
         $seed = base64_decode('xfg17XxfdmQGBaG81VhujlaXeBXohAA+PUGyAm7K6xc=');
         $expected = base64_decode(
@@ -25,7 +23,7 @@ class Ed25519Test extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testSign(): void
+    public function testSign()
     {
         $secKey = base64_decode(
             'SABAmPEL+wRkg0s/ksFVNkNM5lyW7Od0Es0YL9AK1CEjPSbgoTSBCX0RTMtpvZK9oF0yMonrE2wvpQZqDojy4g=='
@@ -44,7 +42,7 @@ class Ed25519Test extends TestCase
     /**
      * @dataProvider signatureProvider
      */
-    public function testVerify(string $key, string $message, string $signature, bool $expected): void
+    public function testVerify($key, $message, $signature, $expected)
     {
         $obj = new Ed25519();
         $actual = $obj->verify($signature, $message, $key);
@@ -54,7 +52,7 @@ class Ed25519Test extends TestCase
     /**
      * @return array<string, array<string, string|bool>>
      */
-    public function signatureProvider(): array
+    public function signatureProvider()
     {
         return [
             'valid' => [

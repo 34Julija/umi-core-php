@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Util\Ed25519;
 
 /**
@@ -40,7 +38,7 @@ class Ed25519 extends AbstractEd25519
      * @param string $seed
      * @return string
      */
-    public function secretKeyFromSeed(string $seed): string
+    public function secretKeyFromSeed($seed)
     {
         $p = array_fill(0, 4, array_fill(0, 16, 0));
 
@@ -62,7 +60,7 @@ class Ed25519 extends AbstractEd25519
      * @param string $secretKey
      * @return string
      */
-    public function sign(string $message, string $secretKey): string
+    public function sign($message, $secretKey)
     {
         // хэшируем приватный ключик (32байта)
         $d = hash('sha512', substr($secretKey, 0, 32), true);
@@ -106,7 +104,7 @@ class Ed25519 extends AbstractEd25519
      * @param string $publicKey
      * @return bool
      */
-    public function verify(string $signature, string $message, string $publicKey): bool
+    public function verify($signature, $message, $publicKey)
     {
         $q = array_fill(0, 4, array_fill(0, 16, 0));
         if (!$this->unpackneg($q, $publicKey)) {
@@ -133,8 +131,9 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param array<int, array<int, int>> $p
      * @param array<int, array<int, int>> $q
+     * @return void
      */
-    private function add(array &$p, array $q): void
+    private function add(array &$p, array $q)
     {
         $a = $b = $c = $d = $t = $e = $f = $g = $h = array_fill(0, 16, 0);
 
@@ -162,8 +161,9 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param string $r
      * @param array<int, int> $x
+     * @return void
      */
-    private function modL(string &$r, array &$x): void
+    private function modL(&$r, array &$x)
     {
         for ($i = 63; $i >= 32; --$i) {
             $carry = 0;
@@ -196,8 +196,9 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param string $r
      * @param array<int, array<int, int>> $p
+     * @return void
      */
-    private function pack(string &$r, array $p): void
+    private function pack(&$r, array $p)
     {
         $tx = $ty = $zi = array_fill(0, 16, 0);
 
@@ -211,8 +212,9 @@ class Ed25519 extends AbstractEd25519
 
     /**
      * @param string $r
+     * @return void
      */
-    private function reduce(string &$r): void
+    private function reduce(&$r)
     {
         $x = array_fill(0, 64, 0);
 
@@ -230,8 +232,9 @@ class Ed25519 extends AbstractEd25519
     /**
      * @param array<int, array<int, int>> $p
      * @param string $s
+     * @return void
      */
-    private function scalarbase(array &$p, string $s): void
+    private function scalarbase(array &$p, $s)
     {
         $q = array_fill(0, 4, array_fill(0, 16, 0));
         $this->set25519($q[0], $this->X);
@@ -245,8 +248,9 @@ class Ed25519 extends AbstractEd25519
      * @param array<int, array<int, int>> $p
      * @param array<int, array<int, int>> $q
      * @param string $s
+     * @return void
      */
-    private function scalarmult(array &$p, array &$q, string $s): void
+    private function scalarmult(array &$p, array &$q, $s)
     {
         $this->set25519($p[0], $this->gf0);
         $this->set25519($p[1], $this->gf1);
@@ -267,7 +271,7 @@ class Ed25519 extends AbstractEd25519
      * @param string $p
      * @return bool
      */
-    private function unpackneg(array &$r, string $p): bool
+    private function unpackneg(array &$r, $p)
     {
         $t = $chk = $num = $den = $den2 = $den4 = $den6 = array_fill(0, 16, 0);
 

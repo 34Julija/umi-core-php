@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Key;
 
 /**
@@ -37,5 +35,5 @@ interface PublicKeyInterface extends KeyInterface
      * @param string $message   Сообщение в бинарном виде.
      * @return bool
      */
-    public function verifySignature(string $signature, string $message): bool;
+    public function verifySignature($signature, $message);
 }

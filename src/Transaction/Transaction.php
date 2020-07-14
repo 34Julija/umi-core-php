@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Transaction;
 
 use Exception;
@@ -43,7 +41,7 @@ class Transaction implements TransactionInterface
     use ConverterTrait;
 
     /** @var int Длина транзакции в байтах. */
-    public const LENGTH = 150;
+    const LENGTH = 150;
 
     /** @var string Транзакция в бинарном виде. */
     private $bytes;
@@ -63,7 +61,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public static function fromBytes(string $bytes): TransactionInterface
+    public static function fromBytes($bytes)
     {
         $trx = new Transaction();
 
@@ -74,7 +72,7 @@ class Transaction implements TransactionInterface
      * Транзакция в бинарном виде, длина 150 байт.
      * @return string
      */
-    public function getBytes(): string
+    public function getBytes()
     {
         return $this->bytes;
     }
@@ -85,7 +83,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setBytes(string $bytes): TransactionInterface
+    public function setBytes($bytes)
     {
         if (strlen($bytes) !== self::LENGTH) {
             throw new Exception('length must be 150 bytes');
@@ -102,7 +100,7 @@ class Transaction implements TransactionInterface
      * @return int
      * @throws Exception
      */
-    public function getFeePercent(): int
+    public function getFeePercent()
     {
         $this->checkVersion([2, 3]);
 
@@ -117,7 +115,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setFeePercent(int $percent): TransactionInterface
+    public function setFeePercent($percent)
     {
         $this->checkVersion([2, 3]);
         $this->validateInt($percent, 0, 2000);
@@ -130,7 +128,7 @@ class Transaction implements TransactionInterface
      * Хэш (txid) транзакции в бинарном виде.
      * @return string
      */
-    public function getHash(): string
+    public function getHash()
     {
         return hash('sha256', $this->bytes, true);
     }
@@ -141,7 +139,7 @@ class Transaction implements TransactionInterface
      * @return string
      * @throws Exception
      */
-    public function getName(): string
+    public function getName()
     {
         $this->checkVersion([2, 3]);
         $this->validateInt(ord($this->bytes[41]), 0, 35);
@@ -156,7 +154,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setName(string $name): TransactionInterface
+    public function setName($name)
     {
         $this->checkVersion([2, 3]);
         $this->validateInt(strlen($name), 0, 35);
@@ -173,7 +171,7 @@ class Transaction implements TransactionInterface
      * Генерируется автоматически при вызове sign().
      * @return int
      */
-    public function getNonce(): int
+    public function getNonce()
     {
         return $this->bytesToInt64(substr($this->bytes, 77, 8));
     }
@@ -183,7 +181,7 @@ class Transaction implements TransactionInterface
      * @param int $nonce Целое число в промежутке от 0 до 18446744073709551615.
      * @return TransactionInterface
      */
-    public function setNonce(int $nonce): TransactionInterface
+    public function setNonce($nonce)
     {
         $this->bytes = substr_replace($this->bytes, $this->int64ToBytes($nonce), 77, 8);
 
@@ -196,7 +194,7 @@ class Transaction implements TransactionInterface
      * @return string
      * @throws Exception
      */
-    public function getPrefix(): string
+    public function getPrefix()
     {
         $this->checkVersion([2, 3]);
 
@@ -210,7 +208,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setPrefix(string $prefix): TransactionInterface
+    public function setPrefix($prefix)
     {
         $this->checkVersion([2, 3]);
         $this->bytes = substr_replace($this->bytes, $this->uint16ToBytes($this->prefixToVersion($prefix)), 35, 2);
@@ -225,7 +223,7 @@ class Transaction implements TransactionInterface
      * @return int
      * @throws Exception
      */
-    public function getProfitPercent(): int
+    public function getProfitPercent()
     {
         $this->checkVersion([2, 3]);
 
@@ -240,7 +238,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setProfitPercent(int $percent): TransactionInterface
+    public function setProfitPercent($percent)
     {
         $this->checkVersion([2, 3]);
         $this->validateInt($percent, 100, 500);
@@ -255,7 +253,7 @@ class Transaction implements TransactionInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public function getRecipient(): AddressInterface
+    public function getRecipient()
     {
         $this->checkVersion([0, 1, 4, 5, 6, 7]);
         $adr = new Address();
@@ -270,7 +268,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setRecipient(AddressInterface $address): TransactionInterface
+    public function setRecipient(AddressInterface $address)
     {
         $this->checkVersion([0, 1, 4, 5, 6, 7]);
         $this->bytes = substr_replace($this->bytes, $address->getBytes(), 35, 34);
@@ -284,7 +282,7 @@ class Transaction implements TransactionInterface
      * @return AddressInterface
      * @throws Exception
      */
-    public function getSender(): AddressInterface
+    public function getSender()
     {
         $adr = new Address();
 
@@ -296,7 +294,7 @@ class Transaction implements TransactionInterface
      * @param AddressInterface $address Адрес отправителя.
      * @return TransactionInterface
      */
-    public function setSender(AddressInterface $address): TransactionInterface
+    public function setSender(AddressInterface $address)
     {
         $this->bytes = substr_replace($this->bytes, $address->getBytes(), 1, 34);
 
@@ -307,7 +305,7 @@ class Transaction implements TransactionInterface
      * Цифровая подпись транзакции, длина 64 байта.
      * @return string
      */
-    public function getSignature(): string
+    public function getSignature()
     {
         return substr($this->bytes, 85, 64);
     }
@@ -317,7 +315,7 @@ class Transaction implements TransactionInterface
      * @param string $signature Подпись, длина 64 байта.
      * @return TransactionInterface
      */
-    public function setSignature(string $signature): TransactionInterface
+    public function setSignature($signature)
     {
         $this->bytes = substr_replace($this->bytes, $signature, 85, strlen($signature));
 
@@ -330,7 +328,7 @@ class Transaction implements TransactionInterface
      * @return int
      * @throws Exception
      */
-    public function getValue(): int
+    public function getValue()
     {
         $this->checkVersion([0, 1]);
 
@@ -345,7 +343,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setValue(int $value): TransactionInterface
+    public function setValue($value)
     {
         $this->checkVersion([0, 1]);
         $this->bytes = substr_replace($this->bytes, $this->int64ToBytes($value), 69, 8);
@@ -357,7 +355,7 @@ class Transaction implements TransactionInterface
      * Версия (тип) транзакции.
      * @return int
      */
-    public function getVersion(): int
+    public function getVersion()
     {
         return ord($this->bytes[0]);
     }
@@ -368,7 +366,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function setVersion(int $version): TransactionInterface
+    public function setVersion($version)
     {
         $this->validateInt($version, 0, 7);
         $this->bytes[0] = chr($version);
@@ -382,7 +380,7 @@ class Transaction implements TransactionInterface
      * @return TransactionInterface
      * @throws Exception
      */
-    public function sign(SecretKeyInterface $secretKey): TransactionInterface
+    public function sign(SecretKeyInterface $secretKey)
     {
         $this->setNonce((int)(microtime(true) * 100));
         $this->setSignature($secretKey->sign(substr($this->bytes, 0, 85)));
@@ -395,7 +393,7 @@ class Transaction implements TransactionInterface
      * @return bool
      * @throws Exception
      */
-    public function verify(): bool
+    public function verify()
     {
         return $this->getSender()
             ->getPublicKey()
@@ -405,8 +403,9 @@ class Transaction implements TransactionInterface
     /**
      * @param int[] $versions
      * @throws Exception
+     * @return void
      */
-    private function checkVersion(array $versions): void
+    private function checkVersion(array $versions)
     {
         if (!in_array($this->getVersion(), $versions, true)) {
             throw new Exception('invalid version');

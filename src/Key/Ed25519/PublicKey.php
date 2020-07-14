@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Key\Ed25519;
 
 use Exception;
@@ -37,7 +35,7 @@ use UmiTop\UmiCore\Util\Ed25519\Ed25519;
 class PublicKey implements PublicKeyInterface
 {
     /** @var int Длина публичного ключа в байтах. */
-    public const LENGTH = 32;
+    const LENGTH = 32;
 
     /** @var string Публичный ключ в бинарном виде. */
     private $bytes;
@@ -47,7 +45,7 @@ class PublicKey implements PublicKeyInterface
      * @param string $bytes Публичный ключ в бинарном виде, в формате libsodium.
      * @throws Exception
      */
-    public function __construct(string $bytes)
+    public function __construct($bytes)
     {
         if (strlen($bytes) !== self::LENGTH) {
             throw new Exception('public key size should be 32 bytes');
@@ -60,7 +58,7 @@ class PublicKey implements PublicKeyInterface
      * Публичный ключ в формате libsodium, длина 32 байта.
      * @return string
      */
-    public function getBytes(): string
+    public function getBytes()
     {
         return $this->bytes;
     }
@@ -69,7 +67,7 @@ class PublicKey implements PublicKeyInterface
      * Публичный ключ.
      * @return PublicKeyInterface
      */
-    public function getPublicKey(): PublicKeyInterface
+    public function getPublicKey()
     {
         return $this;
     }
@@ -81,7 +79,7 @@ class PublicKey implements PublicKeyInterface
      * @return bool
      * @codeCoverageIgnore
      */
-    public function verifySignature(string $signature, string $message): bool
+    public function verifySignature($signature, $message)
     {
         if (function_exists('sodium_crypto_sign_verify_detached') === true) {
             return sodium_crypto_sign_verify_detached($signature, $message, $this->bytes);

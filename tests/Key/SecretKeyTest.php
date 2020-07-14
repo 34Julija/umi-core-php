@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Tests\Key;
 
 use PHPUnit\Framework\TestCase;
@@ -9,7 +7,7 @@ use UmiTop\UmiCore\Key\SecretKey;
 
 class SecretKeyTest extends TestCase
 {
-    public function testConstructor(): void
+    public function testConstructor()
     {
         $expected = base64_decode(
             'u1mzvCnmyIbgs8RNM9GGGHOWcBdMvD7GIKC0m9zTFcaGXaAPQMbuPdZ1oAnTCfR/1rHTyC3J5n7x+dlFimHM8w=='
@@ -20,7 +18,7 @@ class SecretKeyTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testConstructorException(): void
+    public function testConstructorException()
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException('Exception');
@@ -32,7 +30,7 @@ class SecretKeyTest extends TestCase
         new SecretKey($bytes);
     }
 
-    public function testGetPublicKey(): void
+    public function testGetPublicKey()
     {
         $bytes = base64_decode(
             'u1mzvCnmyIbgs8RNM9GGGHOWcBdMvD7GIKC0m9zTFcaGXaAPQMbuPdZ1oAnTCfR/1rHTyC3J5n7x+dlFimHM8w=='
@@ -47,7 +45,7 @@ class SecretKeyTest extends TestCase
     /**
      * @dataProvider seedProvider
      */
-    public function testFromSeed(string $seed, string $expected): void
+    public function testFromSeed($seed, $expected)
     {
         $seed = base64_decode($seed);
         $expected = base64_decode($expected);
@@ -59,7 +57,7 @@ class SecretKeyTest extends TestCase
     /**
      * @return array<string, array<string, string>>
      */
-    public function seedProvider(): array
+    public function seedProvider()
     {
         return [
             '31 bytes' => [
@@ -80,7 +78,7 @@ class SecretKeyTest extends TestCase
     /**
      * @dataProvider signProvider
      */
-    public function testSign(string $key, string $message, string $expected): void
+    public function testSign($key, $message, $expected)
     {
         $key = base64_decode($key);
         $message = base64_decode($message);
@@ -94,7 +92,7 @@ class SecretKeyTest extends TestCase
     /**
      * @return array<string, array<string, string>>
      */
-    public function signProvider(): array
+    public function signProvider()
     {
         return [
             '1st' => [

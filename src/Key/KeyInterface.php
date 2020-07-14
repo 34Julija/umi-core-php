@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Key;
 
 /**
@@ -36,11 +34,11 @@ interface KeyInterface
      * Ключ в бинарном виде.
      * @return string
      */
-    public function getBytes(): string;
+    public function getBytes();
 
     /**
      * Публичный ключ.
      * @return PublicKeyInterface
      */
-    public function getPublicKey(): PublicKeyInterface;
+    public function getPublicKey();
 }

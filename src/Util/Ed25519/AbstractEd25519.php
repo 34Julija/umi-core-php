@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Util\Ed25519;
 
 /**
@@ -40,8 +38,9 @@ abstract class AbstractEd25519 extends AbstractBase
      * @param array<int, array<int, int>> $p
      * @param array<int, array<int, int>> $q
      * @param int $b
+     * @return void
      */
-    protected function cswap(array &$p, array &$q, int $b): void
+    protected function cswap(array &$p, array &$q, $b)
     {
         for ($i = 0; $i < 4; $i++) {
             $this->sel25519($p[$i], $q[$i], $b);
@@ -51,8 +50,9 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $o
      * @param array<int, int> $i
+     * @return void
      */
-    protected function inv25519(array &$o, array $i): void
+    protected function inv25519(array &$o, array $i)
     {
         $c = $i;
         for ($a = 253; $a >= 0; $a--) {
@@ -69,7 +69,7 @@ abstract class AbstractEd25519 extends AbstractBase
      * @param array<int, int> $b
      * @return bool
      */
-    protected function neq25519(array $a, array $b): bool
+    protected function neq25519(array $a, array $b)
     {
         $c = $d = str_repeat("\x0", 32);
 
@@ -82,8 +82,9 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param string $o
      * @param array<int, int> $n
+     * @return void
      */
-    protected function pack25519(string &$o, array $n): void
+    protected function pack25519(&$o, array $n)
     {
         $m = array_fill(0, 16, 0);
         $t = $n;
@@ -114,7 +115,7 @@ abstract class AbstractEd25519 extends AbstractBase
      * @param array<int, int> $a
      * @return int
      */
-    protected function par25519(array $a): int
+    protected function par25519(array $a)
     {
         $d = str_repeat("\x0", 32);
         $this->pack25519($d, $a);
@@ -125,8 +126,9 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $o
      * @param array<int, int> $i
+     * @return void
      */
-    protected function pow2523(array &$o, array $i): void
+    protected function pow2523(array &$o, array $i)
     {
         $c = $i;
 
@@ -143,8 +145,9 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $r
      * @param array<int, int> $a
+     * @return void
      */
-    protected function set25519(array &$r, array $a): void
+    protected function set25519(array &$r, array $a)
     {
         for ($i = 0; $i < 16; $i++) {
             $r[$i] = $a[$i];
@@ -154,8 +157,9 @@ abstract class AbstractEd25519 extends AbstractBase
     /**
      * @param array<int, int> $o
      * @param string $n
+     * @return void
      */
-    protected function unpack25519(array &$o, string $n): void
+    protected function unpack25519(array &$o, $n)
     {
         for ($i = 0; $i < 16; $i++) {
             $o[$i] = ord($n[2 * $i]) + (ord($n[2 * $i + 1]) << 8);
@@ -167,8 +171,9 @@ abstract class AbstractEd25519 extends AbstractBase
      * @param array<int, int> $p
      * @param array<int, int> $q
      * @param int $b
+     * @return void
      */
-    private function sel25519(array &$p, array &$q, int $b): void
+    private function sel25519(array &$p, array &$q, $b)
     {
         $c = ~($b - 1);
         for ($i = 0; $i < 16; $i++) {

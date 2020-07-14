@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Util;
 
 use Exception;
@@ -38,9 +36,10 @@ trait ValidatorTrait
      * @param int $val
      * @param int|null $min
      * @param int|null $max
+     * @return void
      * @throws Exception
      */
-    private function validateInt(int $val, int $min = null, int $max = null): void
+    private function validateInt($val, $min = null, $max = null)
     {
         if ($min !== null && $val < $min) {
             throw new Exception('invalid value');
@@ -54,9 +53,10 @@ trait ValidatorTrait
     /**
      * @param string $val
      * @param int $length
+     * @return void
      * @throws Exception
      */
-    private function validateStr(string $val, int $length): void
+    private function validateStr($val, $length)
     {
         if (strlen($val) !== $length) {
             throw new Exception('invalid length');

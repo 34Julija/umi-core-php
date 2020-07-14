@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace UmiTop\UmiCore\Util;
 
 use Exception;
@@ -47,7 +45,7 @@ class Bech32
      * @return string
      * @throws Exception
      */
-    public function decode(string $bech32): string
+    public function decode($bech32)
     {
         if (strlen($bech32) !== 62 && strlen($bech32) !== 66) {
             throw new Exception('bech32: invalid length');
@@ -73,7 +71,7 @@ class Bech32
      * @return string
      * @throws Exception
      */
-    public function encode(string $bytes): string
+    public function encode($bytes)
     {
         $prefix = $this->bytesToPrefix(substr($bytes, 0, 2));
         $data = $this->convert8to5(substr($bytes, 2, 32));
@@ -85,8 +83,9 @@ class Bech32
     /**
      * @param string $str
      * @throws Exception
+     * @return void
      */
-    private function checkAlphabet(string $str): void
+    private function checkAlphabet($str)
     {
         for ($i = 0, $l = strlen($str); $i < $l; $i++) {
             if (strpos($this->alphabet, $str[$i]) === false) {
@@ -100,7 +99,7 @@ class Bech32
      * @return string
      * @throws Exception
      */
-    private function convert5to8(string $data): string
+    private function convert5to8($data)
     {
         $acc = 0;
         $bits = 0;
@@ -127,7 +126,7 @@ class Bech32
      * @param string $bytes
      * @return string
      */
-    private function convert8to5(string $bytes): string
+    private function convert8to5($bytes)
     {
         $acc = 0;
         $bits = 0;
@@ -155,7 +154,7 @@ class Bech32
      * @param string $data
      * @return string
      */
-    private function createChecksum(string $prefix, string $data): string
+    private function createChecksum($prefix, $data)
     {
         $values = array_merge(
             $this->prefixExpand($prefix),
@@ -176,7 +175,7 @@ class Bech32
      * @param array<int, int> $values
      * @return int
      */
-    private function polyMod(array $values): int
+    private function polyMod(array $values)
     {
         $chk = 1;
         for ($i = 0, $l = count($values); $i < $l; $i++) {
@@ -198,7 +197,7 @@ class Bech32
      * @param string $prefix
      * @return array<int, int>
      */
-    private function prefixExpand(string $prefix): array
+    private function prefixExpand($prefix)
     {
         $len = strlen($prefix);
         $res = array_fill(0, (($len * 2) + 1), 0);
@@ -215,10 +214,10 @@ class Bech32
      * @param string $data
      * @return array<int, int>
      */
-    private function strToBytes(string $data): array
+    private function strToBytes($data)
     {
         return array_map(
-            function (string $chr) {
+            function ($chr) {
                 return (int)strpos($this->alphabet, $chr);
             },
             str_split($data)
@@ -228,9 +227,10 @@ class Bech32
     /**
      * @param string $prefix
      * @param string $data
+     * @return void
      * @throws Exception
      */
-    private function verifyChecksum(string $prefix, string $data): void
+    private function verifyChecksum($prefix, $data)
     {
         $poly = $this->polyMod(array_merge($this->prefixExpand($prefix), $this->strToBytes($data)));
 
